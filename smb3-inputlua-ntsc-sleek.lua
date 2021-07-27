@@ -139,7 +139,7 @@ function drawStats(x, y)
 	drawText(x, y, letterTable("pos "))
 	drawText(x+16, y, letterTable("x " .. toHex2(memory.readbyte(0x75)) .. toHex(memory.readbyte(0x90)) .. toHex1(memory.readbyte(0x74d))))
 	drawText(x+16, y +7, letterTable("y " .. toHex2(memory.readbyte(0x87)) .. toHex(memory.readbyte(0xa2)) .. toHex1(memory.readbyte(0x75f))))
-	if(memory.readbyte(0x5fc) > 0) then
+	if(memory.readbyte(0x5fc) > 0 and memory.readbyteunsigned(0x5fc) < 2) then
 	drawText(x+216, y, letterTable("scrnx " .. memory.readbyte(0xab)))
 	end
 	--
