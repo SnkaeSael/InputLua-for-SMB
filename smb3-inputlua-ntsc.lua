@@ -199,7 +199,7 @@ function toHex2(num)
 end
 
 function timeCount()
-	local t = emu.framecount() / 60.098813897441
+	local t = 655171 * emu.framecount() / 39375000
 	local h = math.floor(t / 3600)
 	local m = doubleDigit(math.fmod(math.floor(t / 60), 60))
 	local s = doubleDigit(round(math.fmod(t, 60) * 1000) / 1000)
