@@ -1,9 +1,9 @@
 --------------------------- InputLua for SMB3 on FCEUX, NTSC -------------------------------
 
 colours = {
-	on         = "yellow",
-	off        = "grey",
-	onCurrent  = "green",
+	on = "yellow",
+	off = "grey",
+	onCurrent = "green",
 	offCurrent = "white",
 }
 
