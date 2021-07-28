@@ -55,35 +55,8 @@ nondisplay = {
 	"001001010100100"
 }
 
-blackscrninc = false;
+letterIndex = {a = 1, b = 2, c = 3, d = 4, e = 5, f = 6, g = 7, h = 8, i = 9, j = 10, k = 11, l = 12, m = 13, n = 14, o = 15, p = 16, q = 17, r = 18, s = 19, t = 20, u = 21, v = 22, w = 23, x = 24, y = 25, z = 26, 0 = 27}
 
-letterIndex = {}
-letterIndex["a"] = 1
-letterIndex["b"] = 2
-letterIndex["c"] = 3
-letterIndex["d"] = 4
-letterIndex["e"] = 5
-letterIndex["f"] = 6
-letterIndex["g"] = 7
-letterIndex["h"] = 8
-letterIndex["i"] = 9
-letterIndex["j"] = 10
-letterIndex["k"] = 11
-letterIndex["l"] = 12
-letterIndex["m"] = 13
-letterIndex["n"] = 14
-letterIndex["o"] = 15
-letterIndex["p"] = 16
-letterIndex["q"] = 17
-letterIndex["r"] = 18
-letterIndex["s"] = 19
-letterIndex["t"] = 20
-letterIndex["u"] = 21
-letterIndex["v"] = 22
-letterIndex["w"] = 23
-letterIndex["x"] = 24
-letterIndex["y"] = 25
-letterIndex["z"] = 26
 letterIndex["0"] = 27
 letterIndex["1"] = 28
 letterIndex["2"] = 29
