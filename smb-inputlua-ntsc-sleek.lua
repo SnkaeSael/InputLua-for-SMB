@@ -133,7 +133,7 @@ end
 function drawStats(x, y)
 	drawText(x, y, letterTable("xp " .. toHex(memory.readbyte(109)) .. toHex(memory.readbyte(134)) .. toHex(memory.readbyte(1024)) .. " xs " .. memory.readbytesigned(87) .. "." .. memory.readbyte(1797)))
 	drawText(x + 84, y, letterTable("sx " .. memory.readbyte(941)))
-	drawText(x, y + 7, letterTable("yp " .. toHex(memory.readbyte(181)) .. toHex(memory.readbyte(206)) .. toHex(memory.readbyte(1046)) .. " xs " .. memory.readbytesigned(159) .. "." .. memory.readbyte(1075)))
+	drawText(x, y + 7, letterTable("yp " .. toHex(memory.readbyte(181)) .. toHex(memory.readbyte(206)) .. toHex(memory.readbyte(1046)) .. " ys " .. memory.readbytesigned(159) .. "." .. memory.readbyte(1075)))
 	drawText(x + 84, y + 7, letterTable("fr " .. math.fmod(math.floor((emu.framecount() - emu.lagcount() - 1) / 21), 32767)))
 	drawText(x + 120, y, letterTable("f " .. memory.readbyte(9)))
 	drawText(x + 120, y + 7, letterTable("r " .. remainder))
