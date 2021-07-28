@@ -83,7 +83,7 @@ frameNumbers = {"h", "i", "j", "k", "0", "1", "2", "3", "4", "5", "6", "7", "8",
 
 remainder = ""
 frame = ""
-frameBool = ftrue
+frameBool = true
 
 function drawLetter(x, y, letterData, on, current)
 	local onColour  = current and colours.onCurrent  or colours.on
