@@ -215,7 +215,7 @@ function updateTimers()
 end
 
 function doubleDigit(num)
-	if (num <= 9) then
+	if (num < 10) then
 		return "0" .. num
 	else
 		return tostring(num)
