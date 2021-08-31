@@ -1,15 +1,17 @@
 --------------------------- Sleek InputLua for SMB1/2J on FCEUX, NTSC -------------------------------
 
-display = {
-	"010101111101101",
-	"110101110101110",
-	"011100010001110",
-	"111010010010010",
-	"101101101101111",
-	"110101101101110",
-	"100100100100111",
-	"110101110101101",
+inputOrder = {
+	"up",
+	"down",
+	"left",
+	"right",
+	"start",
+	"select",
+	"A",
+	"B"
 }
+
+display = {A = "010101111101101", B = "110101110101110", select = "011100010001110", start = "111010010010010", up = "101101101101111", down = "110101101101110", left = "100100100100111", right = "110101110101101"}
 
 nondisplay = {
 	"010101111101101",
@@ -92,32 +94,27 @@ function drawLetter(x, y, letterData, on)
 end
 
 function drawInput(x, y)
-	local currentFrame = emu.framecount()
-	local tasEditorInput = taseditor.getinput(currentFrame, 1)
-	local xo = 0
-	if (tasEditorInput >= 0) then
-		for button, letterData in ipairs(display) do
-			local on = (AND(tasEditorInput, BIT(button - 1)) > 0)
-			drawLetter(x + xo, y, letterData, on, true)
-			xo = xo + 4
+	for i = 1, 8 do
+		if (input[inputOrder[i]]) then
+			drawLetter(x + (4 * (i - 1)), y, display[tostring(inputOrder[i])], true, false)
 		end
 	end
 end
 
 function drawStats(x, y)
-	drawText(x, y, letterTable("xp " .. toHex(memory.readbyte(109)) .. toHex(memory.readbyte(134)) .. toHex(memory.readbyte(1024)) .. " xs " .. memory.readbytesigned(87) .. "." .. memory.readbyte(1797)))
-	drawText(x + 84, y, letterTable("sx " .. memory.readbyte(941)))
-	drawText(x, y + 7, letterTable("yp " .. toHex(memory.readbyte(181)) .. toHex(memory.readbyte(206)) .. toHex(memory.readbyte(1046)) .. " ys " .. memory.readbytesigned(159) .. "." .. memory.readbyte(1075)))
-	drawText(x + 84, y + 7, letterTable("fr " .. math.fmod(math.floor((emu.framecount() - emu.lagcount() - 1) / 21), 32767)))
-	drawText(x + 120, y, letterTable("f " .. memory.readbyte(9)))
-	drawText(x + 120, y + 7, letterTable("r " .. remainder))
-	drawText(x + 144, y, letterTable("s " .. sock()))
-	drawText(x + 144, y + 7, letterTable("-" .. frame))
-	drawText(x - 48, y + 7, letterTable(timeCount()[1] .. ":" .. doubleDigit(timeCount()[2]) .. ":" .. doubleDigit(timeCount()[3])))
-	drawText(x - 48, y, letterTable("in"))
-	drawText(x + 156, y + 7, letterTable("lag " .. emu.lagcount()))
+	drawText(x, y, letterTable("xp " .. toHex(memory.readbyte(109)) .. toHex(memory.readbyte(134)) .. toHex(memory.readbyte(1024)) .. " xs " .. memory.readbytesigned(87) .. ":" .. toHex(memory.readbyte(1797))))
+	drawText(x + 80, y, letterTable("sx " .. memory.readbyte(941)))
+	drawText(x, y + 7, letterTable("yp " .. toHex(memory.readbyte(181)) .. toHex(memory.readbyte(206)) .. toHex(memory.readbyte(1046)) .. " ys " .. memory.readbytesigned(159) .. ":" .. toHex(memory.readbyte(1075))))
+	drawText(x + 80, y + 7, letterTable("fr " .. math.fmod(math.floor((emu.framecount() - emu.lagcount() - 1) / 21), 32767)))
+	drawText(x + 116, y, letterTable("f " .. memory.readbyte(9)))
+	drawText(x + 116, y + 7, letterTable("r " .. remainder))
+	drawText(x + 140, y, letterTable("s " .. sock()))
+	drawText(x + 140, y + 7, letterTable("-" .. frame))
+	drawText(x - 52, y + 7, letterTable(doubleDigit(timeCount()[1]) .. ":" .. doubleDigit(timeCount()[2]) .. ":" .. doubleDigit(timeCount()[3])))
+	drawText(x - 52, y, letterTable("inp"))
+	drawText(x + 152, y + 7, letterTable("lag " .. emu.lagcount()))
 	if (memory.readbyte(22) == 45 or memory.readbyte(23) == 45 or memory.readbyte(24) == 45 or memory.readbyte(25) == 45 or memory.readbyte(26) == 45) then
-		drawText(x + 180, y, letterTable("bh " .. memory.readbyte(1155)))
+		drawText(x + 176, y, letterTable("bhp " .. memory.readbyte(1155)))
 	end
 end
 
@@ -210,11 +207,16 @@ function sock()
 	return sockcalc(xpos, yp)
 end
 
-while (true) do
+function drawLua()
 	if taseditor.engaged() then
+		input = joypad.get(1)
 		updateTimers()
-		drawInput(14, 2)
-		drawStats(50, 2)
+		drawInput(18, 2)
+		drawStats(54, 2)
 	end
+end
+
+while (true) do
+	gui.register(drawLua)
 	emu.frameadvance()
 end
