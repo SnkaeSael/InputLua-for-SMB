@@ -213,43 +213,10 @@ function timeCount()
 	local s = doubleDigit(round(math.fmod(t, 60) * 1000) / 1000)
 	s = s .. string.rep(".", 3 - #s)
 	s = s .. string.rep("0", 6 - #s)
-	if(h>0)then
+	if(h > 0)then
 	return h .. ":" .. doubleDigit(m) .. ":" .. s
 	else
 	return m .. ":" .. s
-	end
-end
-
-function updateTimers()
-	if (memory.readbyte(14) == 0) then
-		if(memory.readbyte(1952) == 7 and blackscreeninc) then
-			remainder = doubleDigit(memory.readbyte(1919))
-			blackscreeninc = false
-		end
-		
-		if (frameBool) then
-			frame = frameNumbers[memory.readbyte(1919) + 1]
-			frameBool = false
-		end
-	else
-		frameBool = true
-		
-		if (memory.readbyte(14) == 3 and remainder == "") then
-			remainder = doubleDigit(memory.readbyte(1919))
-		end
-		
-		if (memory.readbyte(14) == 5 and (memory.readbyte(1942) == 6 or memory.readbyte(1943) == 6 or memory.readbyte(1944) == 6 or memory.readbyte(1945) == 6 or memory.readbyte(1946) == 6) and remainder == "") then
-			remainder = doubleDigit(memory.readbyte(1919))
-			blackscreeninc = true
-		end
-		
-		if (memory.readbyte(1953) == 6) then
-			remainder = doubleDigit(memory.readbyte(1919))
-		end
-		
-		if (memory.readbyte(14) == 7) then
-			remainder = ""
-		end
 	end
 end
 
