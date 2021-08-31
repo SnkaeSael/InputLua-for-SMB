@@ -1,15 +1,17 @@
 --------------------------- Sleek InputLua for SMB3 on FCEUX, NTSC -------------------------------
 
-display = {
-	"010101111101101",
-	"110101110101110",
-	"011100010001110",
-	"111010010010010",
-	"101101101101111",
-	"110101101101110",
-	"100100100100111",
-	"110101110101101",
+inputOrder = {
+	"up",
+	"down",
+	"left",
+	"right",
+	"start",
+	"select",
+	"A",
+	"B"
 }
+
+display = {A = "010101111101101", B = "110101110101110", select = "011100010001110", start = "111010010010010", up = "101101101101111", down = "110101101101110", left = "100100100100111", right = "110101110101101"}
 
 nondisplay = {
 	"010101111101101",
@@ -78,7 +80,6 @@ frameNumbers = {"h", "i", "j", "k", "0", "1", "2", "3", "4", "5", "6", "7", "8",
 
 remainder = ""
 frame = ""
-frameBool = ftrue
 pkill=0
 levelcount=0
 backtomap=0
@@ -96,14 +97,9 @@ function drawLetter(x, y, letterData, on)
 end
 
 function drawInput(x, y)
-	local currentFrame = emu.framecount()
-	local tasEditorInput = taseditor.getinput(currentFrame - 1, 1)
-	local xo = 0
-	if (tasEditorInput >= 0) then
-		for button, letterData in ipairs(display) do
-			local on = (AND(tasEditorInput, BIT(button - 1)) > 0)
-			drawLetter(x + xo, y, letterData, on, true)
-			xo = xo + 4
+	for i = 1, 8 do
+		if (input[inputOrder[i]]) then
+			drawLetter(x + (4 * (i - 1)), y, display[tostring(inputOrder[i])], true, false)
 		end
 	end
 end
@@ -232,12 +228,13 @@ function round(n)
 	return n % 1 >= 0.5 and math.ceil(n) or math.floor(n)
 end
 
+function drawLua()
+	gui.box(0, 224, 256, 240, "black")
+	drawInput(170, 233)
+	drawStats(2, 226)
+end
+
 while (true) do
-	if taseditor.engaged() then
-		updateTimers()
-		gui.box(0, 224, 256, 240, "black")
-		drawInput(170, 233)
-		drawStats(2, 226)
-	end
+	gui.register(drawLua)
 	emu.frameadvance()
 end
