@@ -1,4 +1,4 @@
---------------------------- Sleek InputLua for SMB1/2J on FCEUX, NTSC -------------------------------
+--------------------------- Sleek InputLua for SMB1/2J on FCEUX, PAL -------------------------------
 
 inputOrder = {
 	"up",
