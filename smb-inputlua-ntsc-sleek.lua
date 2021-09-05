@@ -135,9 +135,7 @@ function letterTable(str)
 end
 
 function toHex(num)
-	local digit1 = hexNumbers[math.floor(num / 16) + 1]
-	local digit2 = hexNumbers[math.fmod(num, 16) + 1]
-	return digit1 .. digit2
+	return string.format('%02x', num)
 end
 
 function timeCount()
@@ -182,11 +180,7 @@ function updateTimers()
 end
 
 function doubleDigit(num)
-	if (num < 10) then
-		return "0" .. num
-	else
-		return tostring(num)
-	end
+	return string.format('%02d', num)
 end
 
 function round(n)
