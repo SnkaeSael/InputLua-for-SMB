@@ -180,7 +180,11 @@ function updateTimers()
 end
 
 function doubleDigit(num)
-	return string.format('%02d', num)
+	if (num < 10) then
+		return "0" .. num
+	else
+		return tostring(num)
+	end
 end
 
 function round(n)
