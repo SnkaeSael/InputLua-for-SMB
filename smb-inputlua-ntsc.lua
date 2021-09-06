@@ -4,19 +4,22 @@ colours = {
 	on = "yellow",
 	off = "grey",
 	onCurrent = "green",
-	offCurrent = "white",
+	offCurrent = "white"
 }
 
-display = {
-	"010101111101101",
-	"110101110101110",
-	"011100010001110",
-	"111010010010010",
-	"101101101101111",
-	"110101101101110",
-	"100100100100111",
-	"110101110101101",
+inputOrder = {
+	"up",
+	"down",
+	"left",
+	"right",
+	"start",
+	"select",
+	"A",
+	"B"
 }
+
+display = {A = "010101111101101", B = "110101110101110", select = "011100010001110", start = "111010010010010", up = "101101101101111", down = "110101101101110", left = "100100100100111", right = "110101110101101"}
+
 
 nondisplay = {
 	"010101111101101",
@@ -99,15 +102,18 @@ function drawLetter(x, y, letterData, on, current)
 end
 
 function drawInput(x, y)
-	local currentFrame = emu.framecount()
+	local currentFrame = emu.framecount() - 1
 	for frame = 0, 33 do
-		local tasEditorInput = taseditor.getinput(currentFrame - 8 + frame, 1)
-		local xo = 0
-		if (tasEditorInput >= 0) then
-			for button, letterData in ipairs(display) do
-				local on = (AND(tasEditorInput, BIT(button - 1)) > 0)
-				drawLetter(x + xo, y + frame * 7, letterData, on, frame == 8)
-				xo = xo + 5
+		if (currentFrame - 8 + frame > -2) then
+			local tasEditorInput = taseditor.getinput(currentFrame - 8 + frame, 1)
+			local input = {A = getBit(tasEditorInput, 0), B = getBit(tasEditorInput, 1), select = getBit(tasEditorInput, 2), start = getBit(tasEditorInput, 3), up = getBit(tasEditorInput, 4), down = getBit(tasEditorInput, 5), left = getBit(tasEditorInput, 6), right = getBit(tasEditorInput, 7)}
+			
+			if (currentFrame - 8 + frame == -1) then
+				input = {A = false, B = false, select = false, start = false, up = false, down = false, left = false, right = false}
+			end
+			
+			for i = 1, 8 do
+				drawLetter(x + (5 * (i - 1)), y + frame * 7, display[tostring(inputOrder[i])], input[inputOrder[i]], frame == 8)
 			end
 		end
 	end
@@ -156,9 +162,7 @@ function letterTable(str)
 end
 
 function toHex(num)
-	local digit1 = hexNumbers[math.floor(num / 16) + 1]
-	local digit2 = hexNumbers[math.fmod(num, 16) + 1]
-	return digit1 .. digit2
+	return string.format('%02x', num)
 end
 
 function timeCount()
@@ -228,12 +232,24 @@ function sock()
 	return sockcalc(xpos, yp)
 end
 
-while (true) do
+function getBit(num, pos)
+	if (AND(bit.rshift(num, pos), 1) == 1) then
+		return true
+	else
+		return false
+	end
+end
+
+function drawLua()
 	if taseditor.engaged() then
 		updateTimers()
 		gui.box(0, 0, 256, 240, "black", "black")
 		drawInput(2, 2)
 		drawStats(216, 2)
 	end
+end
+
+while (true) do
+	gui.register(drawLua)
 	emu.frameadvance()
 end
