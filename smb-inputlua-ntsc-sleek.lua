@@ -206,12 +206,10 @@ function sock()
 end
 
 function drawLua()
-	if taseditor.engaged() then
-		input = joypad.get(1)
-		updateTimers()
-		drawInput(18, 2)
-		drawStats(54, 2)
-	end
+	input = joypad.get(1)
+	updateTimers()
+	drawInput(18, 2)
+	drawStats(54, 2)
 end
 
 while (true) do
