@@ -80,15 +80,14 @@ letterIndex["."] = "000000000000010"
 letterIndex["-"] = "000000111000000"
 letterIndex[":"] = "000010000000010"
 letterIndex["/"] = "001001010100100"
---hexNumbers = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"}
---frameNumbers = {"h", "i", "j", "k", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f", "g"}
 
---remainder = ""
+--hexNumbers = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"}
+
 frame = ""
-pkill=0
-levelcount=0
-backtompa=0
-tempint=0
+pkill = 0
+levelcount = 0
+backtompa = 0
+tempint = 0
 colour = "white"
 
 function drawLetter(x, y, letterData, on)
@@ -116,7 +115,6 @@ function inputStr()
 end
 
 function drawStats()
-
 	drawText(42, 1, inputStr())
 
 	drawText(0, 0, "pos ")
@@ -124,7 +122,7 @@ function drawStats()
 	drawText(4, 0, "x " .. xpos)
 	--colour="white"
 	drawText(4, 1, "y " .. ypos)
-	if(isautoscroll) then
+	if (isautoscroll) then
 		drawText(54, 0, "scrnx " .. xscreen)
 	end
 	
@@ -142,11 +140,11 @@ function drawStats()
 		drawText(15, 1, "y " .. yspeed)
 	end
 	
-	if(pmeter > 1) then
+	if (pmeter > 1) then
 		drawText(20, 0, "next p " .. math.floor(nextp/8) .. math.fmod(nextp, 8)) --8s digit can tell p state: charging -> 0, have -> 0/1, losing -> 0/1/2
 	end
 	
-	if(pmeter > 63) then
+	if (pmeter > 63) then
 	
 		if (pkill == pkilllast and pkill > 0) then --only works when playing forward
 			tempint = -1
@@ -169,6 +167,7 @@ function drawStats()
 	--enemytypes = 0x671
 	--enemyhps = 0x7cf6
 	--enemystates = 0x661
+	
 	for i = 0, 4 do
 		if ((memory.readbyte(0x671+i) == 14 or memory.readbyte(0x671+i) == 24 or memory.readbyte(0x671+i) == 75 or memory.readbyte(0x671+i) == 76) and memory.readbyte(0x661+i) > 0) then
 			drawText(54, 0, "hp " .. memory.readbyte(0x7cf6+i))
