@@ -6,8 +6,6 @@ SMB1/2J PianoRoll: Displays input in piano roll similar to TASEditor. Other side
 
 SMB1/2J Sleek (positions the stats at the top of the screen): Player Position, Player Speed, Rule #, Frame Timer, Remainder, Pace relative to next framerule, Sockfolder value, Timer, Bowser health (when one is loaded)
 
-SMB3 PianoRoll: Mizu will fill this in eventually
-
 SMB3 Sleek (positions the stats at the bottom of the screen): Player Position (hex), Player Speed, Next P (oct), P Kill Counter, Frames, Lag, Time, Input, Position X Relative to Screen (when in an autoscroller), Boss HP (when one is loaded), Level Count
 
 If you have any suggestions please submit an issue, or if you have an improved copy submit a pull request.
