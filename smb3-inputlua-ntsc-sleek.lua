@@ -119,7 +119,7 @@ function readmemory()
 	enemystates = {memory.readbyte(0x661), memory.readbyte(0x662), memory.readbyte(0x663), memory.readbyte(0x664), memory.readbyte(0x665)}
 	
 	ispipetransition = memory.readbyte(0x675) == 37
-	iswand = memory.readbyte(0x675) == 14 and memory.readbyte(0x7a01) == 0)
+	iswand = (memory.readbyte(0x675) == 14 and memory.readbyte(0x7a01) == 0)
 end
 
 function updateTimers()
@@ -139,7 +139,7 @@ function updateTimers()
 	
 	if (backtomap == 1 and pbacktomap == 0) then
 		pbacktomap = 1
-		if (not(ispipetransition or iswand) then
+		if (not(ispipetransition or iswand)) then
 			levelcount = levelcount + 1
 		end
 	end
@@ -169,7 +169,7 @@ function drawStats()
 	drawText(178, 226, "lag " .. tostring(emu.lagcount()))
 	
 	for i = 1, 5 do
-		if ((enemytypes[i] == 14 or enemytypes[i] == 24 or enemytypes[i] == 75 or enemytypes[i] and enemystates[i] > 0) then
+		if ((enemytypes[i] == 14 or enemytypes[i] == 24 or enemytypes[i] == 75 or enemytypes[i] and enemystates[i] > 0)) then
 			drawText(182, 233, "hp " .. memory.readbyte(0x7cf6 + i - 1))
 		end
 	end
