@@ -156,7 +156,7 @@ function updateTimers()
 end
 
 function drawStats()
-	drawText(2, 2, "inp" .. input)
+	drawText(2, 2, "inp " .. input)
 	drawText(2, 9, doubleDigit(timeCount()[1]) .. ":" .. doubleDigit(timeCount()[2]) .. ":" .. doubleDigit(timeCount()[3]))
 	drawText(56, 2, "xp " .. toHex(xpage) .. toHex(xpixel) .. toHex(xsubpx) .. " xs " .. xspd .. ":" .. toHex(xsubspd))
 	drawText(136, 2, "sx " .. scrnx)
