@@ -1,4 +1,4 @@
---------------------------- Sleek InputLua for SMB1/2J on FCEUX, NTSC -------------------------------
+--------------------------- Sleek InputLua for SMB1/2J on FCEUX, PAL -------------------------------
 
 inputOrder = {
 	"up",
@@ -214,18 +214,10 @@ function round(n)
 	return n % 1 >= 0.5 and math.ceil(n) or math.floor(n)
 end
 
-function sockcalc(xp, yp)
-	xp = xp + math.floor((255 - yp) / 5) * 768
-	return string.format('%06x', xp)
-end
-
 function sock()
-	local xp1 = memory.readbyte(109)
-	local xp2 = memory.readbyte(134)
-	local xp3 = memory.readbyte(1024)
-	local yp = memory.readbyte(206)
-	local xpos = bit.lshift(xp1, 16) + bit.lshift(xp2, 8) + xp3
-	return sockcalc(xpos, yp)
+	local xpos = bit.lshift(xpage, 16) + bit.lshift(xpixel, 8) + xsubpx
+	xpos = xpos + math.floor((255 - ypixel) / 5) * 768
+	return string.format('%.6x', xpos)
 end
 
 function drawLua()
