@@ -1,4 +1,4 @@
---------------------------- Sleek InputLua for SMB1/2J on FCEUX, NTSC -------------------------------
+--------------------------- PianoRoll InputLua for SMB1/2J on FCEUX, NTSC -------------------------------
 
 inputOrder = {
 	"up",
@@ -239,18 +239,10 @@ function round(n)
 	return n % 1 >= 0.5 and math.ceil(n) or math.floor(n)
 end
 
-function sockcalc(xp, yp)
-	xp = xp + bit.rshift(255 - yp, 2) * 640
-	return string.format('%.6x', xp)
-end
-
 function sock()
-	local xp1 = memory.readbyte(109)
-	local xp2 = memory.readbyte(134)
-	local xp3 = memory.readbyte(1024)
-	local yp = memory.readbyte(206)
-	local xpos = bit.lshift(xp1, 16) + bit.lshift(xp2, 8) + xp3
-	return sockcalc(xpos, yp)
+	local xpos = bit.lshift(xpage, 16) + bit.lshift(xpixel, 8) + xsubpx
+	xpos = xpos + bit.rshift(255 - ypixel, 2) * 640
+	return string.format('%.6x', xpos)
 end
 
 function getBit(num, pos)
