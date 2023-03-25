@@ -1,4 +1,4 @@
---------------------------- Sleek InputLua for SMB3 on FCEUX, NTSC -------------------------------
+--------------------------- Sleek InputLua for SMB1/2J on FCEUX, NTSC -------------------------------
 
 inputorder = {"up", "down", "left", "right", "start", "select", "B", "A"}
 
@@ -44,16 +44,16 @@ charindex = {
    [" "] = "000000000000000",
    ["."] = "000000000000010",
    ["-"] = "000000111000000",
-   [":"] = "000010000000010",
-   ["/"] = "001001010100100"
+   [":"] = "000010000000010"
 }
 
 controller = ""
+framenumbers = {"h", "i", "j", "k", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f", "g"}
 
-pkill = 0
-levelcount = 0
-pbacktomap = 0
-tempint = 0
+blackscrninc = false
+remainder = ""
+frame = ""
+framebool = true
 colour = "white"
 
 function inputstr()
@@ -65,97 +65,86 @@ function inputstr()
 end
 
 function readmemory()
-   xpage = memory.readbyte(0x75)
-   xmain = memory.readbyte(0x90)
-   xsub = memory.readbyte(0x74d)
-   xpos = tohex(xpage, 1) .. tohex(xmain) .. tohex(xsub, 0)
+   state = memory.readbyte(0xe)
+   framerule = memory.readbyte(0x77f)
+   levelendtimer = {memory.readbyte(0x796), memory.readbyte(0x797), memory.readbyte(0x798), memory.readbyte(0x799), memory.readbyte(0x79a), memory.readbyte(0x79b)}
+   blackscreentimer = memory.readbyte(0x7a0)
+   castletimer = memory.readbyte(0x7a1)
 
-   ypage = memory.readbyte(0x87)
-   ymain = memory.readbyte(0xa2)
-   ysub = memory.readbyte(0x75f)
-   ypos = tohex(ypage, 1) .. tohex(ymain) .. tohex(ysub, 0)
+   xpage = memory.readbyte(0x6d)
+   xpixel = memory.readbyte(0x86)
+   xsubpx = memory.readbyte(0x400)
+   xspd = memory.readbytesigned(0x57)
+   xsubspd = memory.readbyte(0x705)
 
-   isautoscroll = memory.readbyte(0x5fc) > 0 and memory.readbyte(0x7a01) < 2
-   scrnx = memory.readbyte(0xab)
+   scrnx = memory.readbyte(0x3ad)
 
-   xspeed = memory.readbytesigned(0xbd)
+   ypage = memory.readbyte(0xb5)
+   ypixel = memory.readbyte(0xce)
+   ysubpx = memory.readbyte(0x416)
+   yspd = memory.readbytesigned(0x9f)
+   ysubspd = memory.readbyte(0x433)
 
-   yspeed = memory.readbytesigned(0xcf)
+   igframe = memory.readbyte(0x9)
 
-   pmeter = memory.readbytesigned(0x3dd)
-   nextp = memory.readbyte(0x515)
-   pkill = memory.readbyteunsigned(0x56e)
+   bowserhp = memory.readbyte(0x483)
 
-   backtomap = memory.readbyte(0x14)
-
-   enemytypes = {memory.readbyte(0x671), memory.readbyte(0x672), memory.readbyte(0x673), memory.readbyte(0x674), memory.readbyte(0x675)}
-   enemystates = {memory.readbyte(0x661), memory.readbyte(0x662), memory.readbyte(0x663), memory.readbyte(0x664), memory.readbyte(0x665)}
-
-   ispipetransition = memory.readbyte(0x675) == 37
-   iswand = (memory.readbyte(0x675) == 14 and memory.readbyte(0x7a01) == 0)
-end
-
-function tohex(num, nibble)
-   if nibble then
-      return string.format("%02x", num):sub(nibble + 1, nibble + 1)
-   else
-      return string.format("%02x", num)
-   end
+   enemyslot = {memory.readbyte(0x16), memory.readbyte(0x17), memory.readbyte(0x18), memory.readbyte(0x19), memory.readbyte(0x1a)}
 end
 
 function updatetimers()
-   if (pmeter > 63) then
-      if (pkill == pkilllast and pkill > 0) then -- only works when playing forward
-         tempint = -1
-      else
-         tempint = 0
+   if (state == 0) then
+      if (blackscreentimer == 7 and blackscreeninc) then
+         remainder = string.format("%02d", framerule)
+         blackscreeninc = false
       end
 
-      pkilllast = pkill
-
-      if (pkill == 255) then -- pwing
-         tempint = -511
+      if (framebool) then
+         frame = framenumbers[framerule + 1]
+         framebool = false
       end
-   end
+   else
+      framebool = true
 
-   if (backtomap == 1 and pbacktomap == 0) then
-      pbacktomap = 1
-      if (not (ispipetransition or iswand)) then
-         levelcount = levelcount + 1
+      if (state == 3) then
+         blackscreeninc = true
       end
-   end
 
-   if (backtomap == 0 and pbacktomap == 1) then
-      pbacktomap = 0
+      if (state == 5 and (levelendtimer[1] == 6 or levelendtimer[2] == 6 or levelendtimer[3] == 6 or levelendtimer[4] == 6 or levelendtimer[5] == 6 or levelendtimer[6] == 6) and remainder == "") then
+         remainder = string.format("%02d", framerule)
+         blackscreeninc = true
+      end
+
+      if (castletimer == 6 and remainder == "") then
+         remainder = string.format("%02d", framerule)
+      end
+
+      if (state == 7) then
+         remainder = ""
+      end
+
+      if (state == 8) then
+         blackscreeninc = false
+      end
    end
 end
 
 function drawstats()
-   drawtext(10, 226, "inp " .. controller)
-   drawtext(10, 233, timecount())
-   drawtext(62, 226, "xpos " .. xpos)
-   drawtext(62, 233, "ypos " .. ypos)
-   drawtext(218, 226, "scrnx " .. scrnx)
-   drawtext(102, 226, "xspd " .. xspeed)
-   drawtext(102, 233, "yspd " .. yspeed)
+   drawtext(2, 2, "inp " .. controller)
+   drawtext(2, 9, timecount())
+   drawtext(56, 2, string.format("xp %02x%02x%02x xs %d:%02x", xpage, xpixel, xsubpx, xspd, xsubspd))
+   drawtext(136, 2, "sx " .. scrnx)
+   drawtext(56, 9, string.format("yp %02x%02x%02x ys %d:%02x", ypage, ypixel, ysubpx, yspd, ysubspd))
+   drawtext(136, 9, "fr " .. math.floor((emu.framecount() - emu.lagcount() - 1) / 21) % 32767)
+   drawtext(172, 2, "f " .. igframe)
+   drawtext(172, 9, "r " .. remainder)
+   drawtext(196, 2, "s " .. sock())
+   drawtext(196, 9, "-" .. frame)
+   drawtext(208, 9, "lag " .. emu.lagcount())
 
-   if (pmeter > 1) then
-      drawtext(138, 226, string.format("next p %02o", nextp)) -- 8s digit can tell p state: charging -> 0, have -> 0/1, losing -> 0/1/2
+   if (enemyslot[1] == 45 or enemyslot[2] == 45 or enemyslot[3] == 45 or enemyslot[4] == 45 or enemyslot[5] == 45) then
+      drawtext(232, 2, "bhp " .. bowserhp)
    end
-
-   if (pmeter > 63) then
-      drawtext(138, 233, "p kill " .. pkill * 2 + tempint)
-   end
-
-   drawtext(178, 226, "lag " .. tostring(emu.lagcount()))
-
-   for i = 1, 5 do
-      if ((enemytypes[i] == 14 or enemytypes[i] == 24 or enemytypes[i] == 75 or enemytypes[i] and enemystates[i] > 0)) then
-         drawtext(182, 233, "hp " .. memory.readbyte(0x7cf6 + i - 1))
-      end
-   end
-
-   drawtext(210, 233, "lvl " .. tostring(levelcount) .. "/104") -- 104 for 100%
 end
 
 function drawtext(x, y, str)
@@ -187,7 +176,7 @@ end
 
 function sock()
    local xpos = xpage * 65536 + xpixel * 256 + xsubpx
-   xpos = xpos + (255 - ypixel) * 160
+   xpos = xpos + bit.rshift(255 - ypixel, 2) * 640
    return string.format("%.6x", xpos)
 end
 
