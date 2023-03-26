@@ -185,12 +185,6 @@ function round(n)
    return n % 1 >= 0.5 and math.ceil(n) or math.floor(n)
 end
 
-function sock()
-   local xpos = xpage * 65536 + xpixel * 256 + xsubpx
-   xpos = xpos + (255 - ypixel) * 160
-   return string.format("%.6x", xpos)
-end
-
 function drawlua()
    inputstr()
    readmemory()
